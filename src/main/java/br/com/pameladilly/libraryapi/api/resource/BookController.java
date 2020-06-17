@@ -6,14 +6,15 @@ import br.com.pameladilly.libraryapi.exception.BusinessException;
 import br.com.pameladilly.libraryapi.model.entity.Book;
 import br.com.pameladilly.libraryapi.service.BookService;
 import org.modelmapper.ModelMapper;
+import org.springframework.http.HttpStatus;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import javax.validation.Valid;
 
-import static org.springframework.http.HttpStatus.BAD_REQUEST;
-import static org.springframework.http.HttpStatus.CREATED;
+import static org.springframework.http.HttpStatus.*;
 
 @RestController
 @RequestMapping("/api/books")
@@ -37,6 +38,34 @@ public class BookController {
         entity = service.save(entity);
 
         return modelMapper.map(entity, BookDTO.class);
+    }
+
+    @GetMapping("{id}")
+    public BookDTO get(@PathVariable Long id){
+        return service.getById(id).map( book ->  modelMapper.map(book, BookDTO.class)
+
+                ).orElseThrow( () -> new ResponseStatusException(HttpStatus.NOT_FOUND) );
+    }
+
+
+
+    @DeleteMapping("{id}")
+    @ResponseStatus(NO_CONTENT)
+    public void delete(@PathVariable Long id) {
+        Book book = service.getById(id).orElseThrow(() -> new ResponseStatusException(NOT_FOUND));
+
+        service.delete(book);
+    }
+
+    @PutMapping("{id}")
+    public BookDTO update ( @PathVariable Long id, @RequestBody BookDTO bookDTO) {
+        Book book = service.getById(id).orElseThrow(() -> new ResponseStatusException(NOT_FOUND));
+        book.setAuthor(bookDTO.getAuthor());
+        book.setTitle(bookDTO.getTitle());
+        book = service.update(book);
+        return modelMapper.map(book, BookDTO.class);
+
+
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)

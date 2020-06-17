@@ -6,6 +6,8 @@ import br.com.pameladilly.libraryapi.model.repository.BookRepository;
 import br.com.pameladilly.libraryapi.service.BookService;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 public class BookServiceImpl implements BookService {
 
@@ -22,5 +24,20 @@ public class BookServiceImpl implements BookService {
         }
 
         return repository.save(book);
+    }
+
+    @Override
+    public Optional<Book> getById(Long id) {
+        return Optional.empty();
+    }
+
+    @Override
+    public void delete(Book book) {
+
+    }
+
+    @Override
+    public Book update(Book book) {
+        return null;
     }
 }
