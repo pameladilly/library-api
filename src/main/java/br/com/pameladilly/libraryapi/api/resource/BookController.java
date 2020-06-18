@@ -6,6 +6,9 @@ import br.com.pameladilly.libraryapi.exception.BusinessException;
 import br.com.pameladilly.libraryapi.model.entity.Book;
 import br.com.pameladilly.libraryapi.service.BookService;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -13,6 +16,9 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import javax.validation.Valid;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.springframework.http.HttpStatus.*;
 
@@ -68,20 +74,19 @@ public class BookController {
 
     }
 
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    @ResponseStatus(BAD_REQUEST)
-    public ApiErrors handleValidationExceptions(MethodArgumentNotValidException ex){
+    @GetMapping
+    public Page<BookDTO> find (BookDTO bookDTO, Pageable pageRequest) {
 
-        BindingResult bindingResult = ex.getBindingResult();
+        Book filter = modelMapper.map(bookDTO, Book.class);
 
-        return new ApiErrors(bindingResult);
+        Page<Book> result = service.find(filter, pageRequest);
+        List<BookDTO> list = result.getContent()
+                .stream()
+                .map(entity -> modelMapper.map(entity, BookDTO.class))
+                .collect(Collectors.toList());
 
+        return new PageImpl<BookDTO>( list, pageRequest, result.getTotalElements());
     }
 
-    @ExceptionHandler(BusinessException.class)
-    @ResponseStatus(BAD_REQUEST)
-    public ApiErrors handleBusinessException(BusinessException ex){
-        return new ApiErrors(ex);
 
-    }
 }
