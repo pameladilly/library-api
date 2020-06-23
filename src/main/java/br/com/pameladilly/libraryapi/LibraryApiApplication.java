@@ -19,8 +19,7 @@ import java.util.List;
 @EnableScheduling
 public class LibraryApiApplication {
 
-	@Autowired
-	private EmailService emailService;
+
 
 	@Bean
 	public ModelMapper modelMapper(){
