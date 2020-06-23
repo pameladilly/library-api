@@ -15,7 +15,7 @@ import java.util.Optional;
 @Service
 public class BookServiceImpl implements BookService {
 
-    private BookRepository repository;
+    private final BookRepository repository;
 
     public BookServiceImpl(BookRepository repository) {
         this.repository = repository;
@@ -64,6 +64,8 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public Optional<Book> getBookByIsbn(String isbn) {
-        return Optional.empty();
+
+        return repository.findByIsbn(isbn);
+
     }
 }

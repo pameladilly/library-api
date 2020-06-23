@@ -38,7 +38,7 @@ public class BookRepositoryTest {
         Assertions.assertThat(exists).isTrue();
     }
 
-    private Book createNewBook(String isbn) {
+    public static Book createNewBook(String isbn) {
         return Book.builder().title("Aventurar").author("Fulano").isbn(isbn).build();
     }
 
@@ -68,7 +68,7 @@ public class BookRepositoryTest {
     public void saveBookTest(){
         Book book = createNewBook("123");
 
-        Book savedBook = repository.save(book);
+        Book savedBook = entityManager.persist(book);
 
         Assertions.assertThat( savedBook.getId()).isNotNull();
 
