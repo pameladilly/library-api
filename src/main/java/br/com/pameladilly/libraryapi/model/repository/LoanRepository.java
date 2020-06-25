@@ -12,6 +12,7 @@ import org.springframework.data.repository.query.Param;
 import java.time.LocalDate;
 import java.util.List;
 
+
 public interface LoanRepository extends JpaRepository<Loan, Long> {
 
     @Query(value = " select case when (  count(l.id) > 0 ) then true else false end  " +
