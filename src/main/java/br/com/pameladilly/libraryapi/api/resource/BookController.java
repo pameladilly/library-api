@@ -11,6 +11,7 @@ import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -34,6 +35,8 @@ public class BookController {
 
     private final BookService service;
     private final ModelMapper modelMapper;
+
+    @Autowired
     private final LoanService loanService;
 /*
     public BookController(BookService service, ModelMapper modelMapper, LoanService loanService) {
@@ -87,7 +90,7 @@ public class BookController {
 
     @PutMapping("{id}")
     @ApiOperation("Updates a book")
-    public BookDTO update ( @PathVariable Long id, @RequestBody BookDTO bookDTO) {
+    public BookDTO update ( @PathVariable Long id, @RequestBody @Valid BookDTO bookDTO) {
         log.info( "updating book of id: {} ", id);
 
         Book book = service.getById(id).orElseThrow(() -> new ResponseStatusException(NOT_FOUND));
